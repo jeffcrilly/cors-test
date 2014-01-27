@@ -1,0 +1,25 @@
+Options FollowSymLinks
+
+<FilesMatch "\.(html|htm|js|json)$">
+  Header unset Etag
+  Header set Cache-control "max-age=0, no-cache, no-store"
+  Header unset Last-Modified
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+<IfModule mod_headers.c>
+    # Define the root domain that is allowed
+    SetEnvIf Origin .+ ACCESS_CONTROL_ROOT=crilly.org
+
+    # Check that the Origin: matches the defined root domain and capture it in
+    # an environment var if it does
+    RewriteEngine On
+    RewriteCond %{ENV:ACCESS_CONTROL_ROOT} !=""
+    RewriteCond %{ENV:ACCESS_CONTROL_ORIGIN} =""
+    RewriteCond %{ENV:ACCESS_CONTROL_ROOT}&%{HTTP:Origin} ^([^&]+)&(https?://(?:.+?\.)?\1(?::\d{1,5})?)$
+    RewriteRule .* - [E=ACCESS_CONTROL_ORIGIN:%2]
+
+    # Set the response header to the captured value if there was a match
+    Header set Access-Control-Allow-Origin %{ACCESS_CONTROL_ORIGIN}e env=ACCESS_CONTROL_ORIGIN
+</IfModule>
+</IfModule>

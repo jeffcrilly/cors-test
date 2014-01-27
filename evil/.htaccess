@@ -1,0 +1,6 @@
+<FilesMatch "\.(html|htm|js)$">
+  Header unset Etag
+  Header set Cache-control "max-age=0, no-cache, no-store"
+  Header unset Last-Modified
+  Header set Access-Control-Allow-Origin *
+</FilesMatch>
